@@ -1,0 +1,9 @@
+clone this repo locally, cd into the newly created directory.
+
+npm install
+
+composer install
+
+cp .env.example .env
+
+php artisan key:generate

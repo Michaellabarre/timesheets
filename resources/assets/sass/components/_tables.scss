@@ -1,0 +1,15 @@
+
+.table tbody{
+	tr{
+		td{
+			vertical-align:middle;
+		}
+		td.actions>*{
+			float:left;
+			margin-right:0.5em;
+			&:last-child{
+				margin-right:0;
+			}
+		}
+	}
+}
