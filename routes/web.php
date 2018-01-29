@@ -56,6 +56,17 @@ Route::group(['prefix' => 'jobs'], function () {
 	Route::get('/{job}/edit', 'JobController@edit')->name('jobs.edit')->middleware('can:update-job,job');
 });
 
+
+Route::group(['prefix' => 'tasktypes'], function () {
+	Route::get('/', 'TasktypeController@index')->name('tasktypes.index')->middleware('can:list-tasktypes');
+	Route::post('/', 'TasktypeController@store')->name('tasktypes.store')->middleware('can:create-tasktype');
+	Route::get('/create', 'TasktypeController@create')->name('tasktypes.create')->middleware('can:create-tasktype');
+	Route::delete('/{tasktype}', 'TasktypeController@destroy')->name('tasktypes.destroy')->middleware('can:delete-tasktype,tasktype');
+	Route::patch('/{tasktype}', 'TasktypeController@update')->name('tasktypes.update')->middleware('can:update-tasktype,tasktype');
+	Route::get('/{tasktype}', 'TasktypeController@show')->name('tasktypes.show')->middleware('can:view-tasktype');
+	Route::get('/{tasktype}/edit', 'TasktypeController@edit')->name('tasktypes.edit')->middleware('can:update-tasktype,tasktype');
+});
+
 Route::group(['prefix' => 'timesheets'], function () {
 	Route::get('/', 'TimesheetController@index')->name('timesheets.index')->middleware('can:list-timesheets');
 	Route::post('/', 'TimesheetController@store')->name('timesheets.store')->middleware('can:create-timesheet');

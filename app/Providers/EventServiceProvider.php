@@ -28,5 +28,10 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         //
+        Event::listen('eloquent.saving: *', function ($model) {
+            if (\App::environment('demo')){
+                return false;
+            }
+        });
     }
 }

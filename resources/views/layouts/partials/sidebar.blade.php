@@ -114,6 +114,24 @@
         </ul>
       </li>
 
+      <li class="treeview {{ Menu::activeMenu('tasktypes') }}">
+        <a href="#">
+          <i class="fa fa-tags"></i>
+          <span>Task Types</span>
+          <span class="pull-right-container">
+            <i class="fa fa-angle-left pull-right"></i>
+          </span>
+        </a>
+        <ul class="treeview-menu">
+          <li class="{{ Menu::activeMenu('tasktypes.index') }}"><a href="{{ route('tasktypes.index') }}"><i class="fa fa-list"></i> All Task Types</a></li>
+            @can('create-job')
+            <li class="{{ Menu::activeMenu('tasktypes.create') }}">
+              <a href="{{ route('tasktypes.create') }}"><i class="fa fa-plus"></i>Add Tasktype</a>
+            </li>
+            @endcan
+        </ul>
+      </li>
+
       @endif
 
       @if (Auth::guest())

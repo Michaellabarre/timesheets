@@ -10,6 +10,7 @@ use App\Client;
 use App\Job;
 use App\Timesheet;
 use App\Quote;
+use App\Tasktype;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -39,6 +40,7 @@ class AuthServiceProvider extends ServiceProvider
 		$this->registerTimesheetPolicies();
 		$this->registerQuotePolicies();
 		$this->registerReportPolicies();
+		$this->registerTasktypePolicies();
 	}
 	public function registerUserPolicies(){
 		Gate::define('create-user', function ($user) {
@@ -130,5 +132,22 @@ class AuthServiceProvider extends ServiceProvider
 		Gate::define('generate-reports', function ($user) {
 			return $user->inRole('administrator');
 		});
+	}
+	public function registerTasktypePolicies(){
+		Gate::define('create-tasktype', function ($user) {
+			return $user->inRole('administrator');
+		});
+		Gate::define('update-tasktype', function ($user, Tasktype $tasktype) {
+	        return $user->inRole('administrator');
+	    });
+	    Gate::define('delete-tasktype', function ($user) {
+	        return $user->inRole('administrator');
+	    });
+	    Gate::define('view-tasktype', function ($user) {
+	        return $user->inRole('administrator');
+	    });
+	    Gate::define('list-tasktypes', function ($user) {
+	        return $user->inRole('administrator');
+	    });
 	}
 }

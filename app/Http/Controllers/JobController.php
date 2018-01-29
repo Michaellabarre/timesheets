@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Job;
 use App\Client;
+use App\Quote;
 use Illuminate\Http\Request;
 
 class JobController extends Controller
@@ -58,6 +59,12 @@ class JobController extends Controller
         $client->jobs()->save($job);
 
         $job->save();
+
+        $quote = new Quote;        
+        $quote->pm_hours = 0;
+        $quote->dev_hours = 0;
+        $quote->design_hours = 0;
+        $job->quote()->save($quote);
 
         flash("Job <strong>$job->code: $job->name</strong> saved.", 'success');
         if($request->input('prev_url')!==''){

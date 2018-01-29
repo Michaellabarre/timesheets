@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\TaskType;
+use App\Tasktype;
 use Illuminate\Http\Request;
 
 class TasktypeController extends Controller
@@ -14,7 +14,9 @@ class TasktypeController extends Controller
      */
     public function index()
     {
-        //
+        $tasktypes = Tasktype::all();
+        
+        return view('tasktypes.index', compact('tasktypes'));
     }
 
     /**
@@ -24,7 +26,7 @@ class TasktypeController extends Controller
      */
     public function create()
     {
-        //
+        return view('tasktypes.create');
     }
 
     /**
@@ -35,7 +37,24 @@ class TasktypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        $this->validate($request,[
+            'name' => 'required|unique:tasktypes',
+        ]);
+
+        $tasktype = new Tasktype;
+
+        $tasktype->name = $request->input('name');
+
+        $tasktype->save();
+
+        flash("Job <strong>$tasktype->name</strong> saved.", 'success');
+        if($request->input('prev_url')!==''){
+            return redirect($request->input('prev_url'));
+        }
+        else{
+            return redirect()->route('tasktypes.index');
+        }
     }
 
     /**
@@ -44,7 +63,7 @@ class TasktypeController extends Controller
      * @param  \App\TaskType  $taskType
      * @return \Illuminate\Http\Response
      */
-    public function show(TaskType $taskType)
+    public function show(Tasktype $tasktype)
     {
         //
     }
@@ -55,9 +74,10 @@ class TasktypeController extends Controller
      * @param  \App\TaskType  $taskType
      * @return \Illuminate\Http\Response
      */
-    public function edit(TaskType $taskType)
+    public function edit(Tasktype $tasktype)
     {
-        //
+        //        
+        return view('tasktypes.edit', compact('tasktype'));
     }
 
     /**
@@ -67,9 +87,17 @@ class TasktypeController extends Controller
      * @param  \App\TaskType  $taskType
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TaskType $taskType)
+    public function update(Request $request, Tasktype $tasktype)
     {
-        //
+        $this->validate($request,[
+            'name' => 'required|unique:tasktypes',
+        ]);
+
+        $tasktype->name = $request->input('name');
+
+        $tasktype->save();
+
+        return redirect()->route('tasktypes.index');
     }
 
     /**
@@ -78,8 +106,9 @@ class TasktypeController extends Controller
      * @param  \App\TaskType  $taskType
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TaskType $taskType)
+    public function destroy(Tasktype $tasktype)
     {
-        //
+        Tasktype::destroy($tasktype->id);
+        return redirect()->route('tasktypes.index');
     }
 }

@@ -10,10 +10,8 @@ class UsersTableSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
-    	
+    {    	
         $faker = Faker\Factory::create();
-
 
         for($i = 0; $i < 5; $i++){
             $user = new \App\User;
