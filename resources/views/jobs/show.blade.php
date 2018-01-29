@@ -35,35 +35,33 @@
 		</div>
 		<div class="col-xs-12 col-sm-3">
 			<div class="card mb-4">
-				<table class="table $id mb-0 text-center">
+				<table class="table mb-0">
 					<thead class="thead-default">
 						<tr>
-							<th>PM Hours</th>
-							<th>Dev Hours</th>
-							<th>Design Hours</th>
-							<th>Total Hours</th>
+							<th>Task Type</th>
+							<th>Quoted Hours</th>
+							<th>Actual Hours</th>
+							<th>Remaining</th>
 						</tr>
 					</thead>
 					<tbody>
+						@foreach($job->quote->tasktypes as $tasktype)
 						<tr>
-							<td class="{{ ( $job->pmOverTime() ?'table-danger':'table-success' ) }}">
-								<span title="Used">{{ $job->getTaskTime('Project Management') }}</span> / <span title="Quoted">{{ $job->quote->pm_hours }}</span>
-								<span title="Remaining">({{  $job->quote->pm_hours - $job->getTaskTime('Project Management') }})</span>
-							</td>
-							<td class="{{ ( $job->devOverTime() ?'table-danger':'table-success') }}">
-								<span title="Used">{{ $job->getTaskTime('Development') }}</span> / <span title="Quoted">{{ $job->quote->dev_hours }}</span>
-								<span title="Remaining">({{  $job->quote->dev_hours - $job->getTaskTime('Development') }})</span>
-							</td>
-							<td class="{{ ( $job->designOverTime() ?'table-danger':'table-success') }}">
-								<span title="Used">{{ $job->getTaskTime('Design') }}</span> / <span title="Quoted">{{ $job->quote->design_hours }}</span>
-								<span title="Remaining">({{  $job->quote->design_hours - $job->getTaskTime('Design') }})</span>
-							</td>
-							<td class="{{ ( $job->totalOverTime() ?'table-danger':'table-success') }}">
-								<strong><span title="Used">{{ $job->getTime() }}</span> / <span title="Quoted">{{ $job->getTotalQuotedTime() }}</span>
-									<span title="Remaining">({{  $job->getTotalQuotedTime() - $job->getTime() }})</span></strong>
-							</td>
+							<td>{{ $tasktype->name }}</td>
+							<td>{{ $tasktype->pivot->quoted_hours }}</td>
+							<td>{{ $job->taskHours( $tasktype->id ) }}</td>
+							<td>{{ $job->taskRemaining( $tasktype->id ) }}</td>
 						</tr>
+						@endforeach
 					</tbody>
+					<tfoot>
+						<tr>
+							<td><strong>Total:</strong></td>
+							<td><strong>{{ $job->getTotalQuotedTime() }}</strong></td>
+							<td><strong>{{ $job->getTime() }}</strong></td>
+							<td><strong>{{ $job->totalOverTime() }}</strong></td>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 		</div>

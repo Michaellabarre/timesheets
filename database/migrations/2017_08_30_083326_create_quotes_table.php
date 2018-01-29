@@ -16,9 +16,6 @@ class CreateQuotesTable extends Migration
         Schema::create('quotes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('job_id')->unsigned();
-            $table->integer('pm_hours');
-            $table->integer('dev_hours');
-            $table->integer('design_hours');
             $table->timestamps();
 
             $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade');

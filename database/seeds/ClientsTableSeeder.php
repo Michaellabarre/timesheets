@@ -21,7 +21,14 @@ class ClientsTableSeeder extends Seeder
                     function($job)
                     {
                         $job->timesheets()->saveMany( factory(App\Timesheet::class, 10)->create( [ 'job_id' => $job->id ] ) );
-                        $job->quote()->save( factory(App\Quote::class)->create( [ 'job_id' => $job->id ] ) );
+                        $quote = factory(App\Quote::class)->make( [ 'job_id' => $job->id ] );
+                        $quote->save();
+                        $tasktypes = App\Tasktype::all()->pluck('id');
+                        foreach($tasktypes as $t_id){
+                            $quote->tasktypes()->attach( $t_id, ['quoted_hours' => 10 ] );
+                        }
+                        $job->quote()->save( $quote );
+
                     }
                 ));
 

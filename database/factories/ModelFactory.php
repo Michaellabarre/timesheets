@@ -45,9 +45,10 @@ $factory->define(App\Quote::class, function (Faker\Generator $faker) {
         // 'client_id' => function () {
         //     return factory(App\Client::class)->create()->id;
         // },
-        'pm_hours' => $faker->numberBetween(10,40),
+
+       /* 'pm_hours' => $faker->numberBetween(10,40),
         'dev_hours' => $faker->numberBetween(10,40),
-        'design_hours' => $faker->numberBetween(10,40),
+        'design_hours' => $faker->numberBetween(10,40),*/
         
     ];
 });

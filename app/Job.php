@@ -38,34 +38,35 @@ class Job extends Model
 
     public function getTotalQuotedTime()
     {
-        return  $this->quote->dev_hours + $this->quote->design_hours + $this->quote->pm_hours;
+        $total = 0;
+        foreach($this->quote->tasktypes()->get() as $tasktype){
+            $total += $tasktype->pivot->quoted_hours;
+        }
+        return $total;
     }
 
-    public function devOverTime()
-    {
-        return $this->isOvertime('Development', $this->quote->dev_hours);
-    }
-    public function pmOverTime()
-    {
-        return $this->isOvertime('Project Management',$this->quote->pm_hours);
-    }
-    public function designOverTime()
-    {
-        return $this->isOvertime('Design', $this->quote->design_hours);
-    }
+
+    
     public function totalOverTime()
     {
-        return $this->timesheets->sum('hours') > $this->getTotalQuotedTime();
+        return $this->getTotalQuotedTime() - $this->timesheets->sum('hours');
     }
 
-    public function isOverTime($task='', $quoteTime)
+    public function taskRemaining( $t_id = '')
     {
-        $tasktype = Tasktype::where('name',$task)->first();
+        //$tasktype = Tasktype::where('id',$t_id)->first();
+        $hours = $this->taskHours($t_id);
+        return $this->quote->tasktypes()->where('id',$t_id)->first()->pivot->quoted_hours - $hours ;   
+    }
+
+    public function taskHours( $t_id = '' )
+    {
+        $tasktype = Tasktype::where('id',$t_id)->first();
         $time = $this->timesheets()->where('tasktype_id',$tasktype->id)
             ->selectRaw('sum(hours) as sum')
             ->first()->sum;
 
-        return $time > $quoteTime;
+        return ($time)?$time:0;
     }
 
     public function getTimeByTask(){

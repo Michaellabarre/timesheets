@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Job;
 use App\Client;
 use App\Quote;
+use App\Tasktype;
 use Illuminate\Http\Request;
 
 class JobController extends Controller
@@ -60,11 +61,13 @@ class JobController extends Controller
 
         $job->save();
 
-        $quote = new Quote;        
-        $quote->pm_hours = 0;
-        $quote->dev_hours = 0;
-        $quote->design_hours = 0;
+        $quote = new Quote;
         $job->quote()->save($quote);
+        $tasktypes = Tasktype::all()->pluck('id');
+        foreach($tasktypes as $t_id){
+            $quote->tasktypes()->attach( $t_id, ['quoted_hours' => 0 ] );
+        }
+        
 
         flash("Job <strong>$job->code: $job->name</strong> saved.", 'success');
         if($request->input('prev_url')!==''){
@@ -84,7 +87,8 @@ class JobController extends Controller
     public function show(Job $job)
     {
         $timesheets = $job->timesheets()->orderBy('date')->get();
-        return view('jobs.show', compact('job','timesheets'));
+        $tasktypes = Tasktype::all();
+        return view('jobs.show', compact('job','timesheets','tasktypes'));
     }
 
     /**

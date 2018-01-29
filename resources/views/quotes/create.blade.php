@@ -22,6 +22,24 @@
 	</div>
 
 	<div class="form-group">
+		<table class="table table-striped">
+			<thead>
+				<th>Task Type</th>
+				<th>Hours</th>
+			</thead>
+			<tbody>
+				@foreach($tasktypes as $tasktype)
+				<tr>
+					<td>{{ $tasktype->name }}</td>
+					<td><input class="form-control" type="number" name="tasktype[{{ $tasktype->id }}]quoted_hours" value="0"></td>
+				</tr>
+				@endforeach
+			</tbody>
+			<tfoot></tfoot>
+		</table>
+	</div>
+
+	{{-- <div class="form-group">
 		<div class="row">
 			<div class="col-sm-4">
 				{!! Form::label('pm_hours', 'PM Hours') !!}
@@ -36,7 +54,7 @@
 				{!! Form::number('design_hours', null, ['class' => 'form-control','placeholder' => 'Design Hours', 'required']) !!}
 			</div>
 		</div>
-	</div>
+	</div> --}}
 
 	<button type="submit" class="btn btn-primary">Submit</button>
 </form>

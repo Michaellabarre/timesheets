@@ -13,4 +13,8 @@ class Quote extends Model
     public function job(){
     	return $this->belongsTo(Job::class);
     }
+
+    public function tasktypes(){
+    	return $this->belongsToMany( Tasktype::class )->withPivot('quoted_hours');
+    }
 }

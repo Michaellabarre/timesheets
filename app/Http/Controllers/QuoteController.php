@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Quote;
 use App\Job;
+use App\Tasktype;
 use Illuminate\Http\Request;
 
 class QuoteController extends Controller
@@ -27,10 +28,9 @@ class QuoteController extends Controller
      */
     public function create()
     {
-        $jobs = Job::pluck('code', 'id');
-        
-        return view('quotes.create', compact('jobs'));
-
+        $jobs = Job::whereDoesntHave('quote')->pluck('code', 'id');
+        $tasktypes = Tasktype::all();        
+        return view('quotes.create', compact('jobs', 'tasktypes'));
     }
 
     /**
@@ -43,19 +43,17 @@ class QuoteController extends Controller
     {
         $this->validate($request,[
             'job_id' => 'required|unique:quotes',
-            'pm_hours' => 'required',
-            'dev_hours' => 'required',
-            'design_hours' => 'required',
         ]);
 
         $quote = new Quote;
 
         $quote->job_id = $request->input('job_id');
-        $quote->pm_hours = $request->input('pm_hours');
-        $quote->dev_hours = $request->input('dev_hours');
-        $quote->design_hours = $request->input('design_hours');
 
         $quote->save();
+
+        foreach($request->input('tasktype') as $t_id => $q_hours ){
+            $quote->tasktypes()->attach($t_id, ['quoted_hours' => $q_hours ]);
+        }
 
         flash("Quote <strong>$quote->id</strong> saved.", 'success');
         return redirect()->route('quotes.index');
@@ -80,7 +78,13 @@ class QuoteController extends Controller
      */
     public function edit(Quote $quote)
     {
-        return view('quotes.edit', compact('quote'));
+        $tasktypes = Tasktype::all();
+
+        //dd($tasktypes, $quote->tasktypes()->get());
+
+        $diff = $tasktypes->diffKeys($quote->tasktypes()->get());
+
+        return view('quotes.edit', compact('quote', 'diff'));
     }
 
     /**
@@ -92,14 +96,14 @@ class QuoteController extends Controller
      */
     public function update(Request $request, Quote $quote)
     {
-        
-        $quote->pm_hours = $request->input('pm_hours');
-        $quote->design_hours = $request->input('design_hours');
-        $quote->dev_hours = $request->input('dev_hours');
+        //$quote->save();
 
-        $quote->save();
+        foreach($request->input('tasktype') as $t_id => $q_hours ){
+            $quote->tasktypes()->syncWithoutDetaching([ $t_id => [ 'quoted_hours' => $q_hours ] ] );
+        }
 
-        return redirect()->route('quotes.index');
+        flash("Quote <strong>$quote->id</strong> updated.", 'success');
+        return redirect()->back();//('quotes.index');
     }
 
     /**
