@@ -26,6 +26,11 @@ class CreateQuoteTasktypesTable extends Migration
 
             $table->timestamps();
         });
+
+        Schema::table('quotes', function (Blueprint $table) {
+            $table->dropColumn(['pm_hours', 'design_hours', 'development_hours']);
+        });
+
     }
 
     /**
